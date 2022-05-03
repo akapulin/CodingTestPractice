@@ -1,0 +1,172 @@
+/**
+      첫 번째, 문제 풀이
+      결과 : 총3문제중 3문제 통과
+      피드백 :
+            1) 문제가 어렵지 않아 시간으로 점수매길까 싶어 약간 급하게 풀어서 정리안된부분이 몇 된다.
+            2) 2번문제 나는 O(n2)으로 풀었는데 다시보니 O(n)이 가능했다
+          
+*/
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+
+public class Solution21 {
+
+//	class Solution {
+//	    public int solution(int A, int B) {
+//	        int result =0;
+//
+//	        String num1 = String.valueOf(A);
+//	        String num2 = String.valueOf(B);
+//	        String[] numbers = num2.split(num1);
+//	        if(numbers[0].length()==num2.length()){
+//	            result = -1;
+//	        }
+//	        else{
+//	            result = numbers[0].length();
+//	        }
+//
+//	        return result;
+//	    }
+//	}
+
+//	public int solution(int[] A) {
+//		int result =0;
+//		
+//		boolean[] turnOn = new boolean[A.length];
+//		
+//		for(int i=0;i<A.length;i++) {
+//			if(getOn(turnOn,A[i])) {
+//				result++;
+//			}
+//		}
+//	
+//		return result;
+//	}
+//	
+//	private boolean getOn(boolean[] turnOn, int n) {
+//		boolean light = true;
+//		
+//		turnOn[n-1] =true;
+//		
+//		
+//		for(int i=0;i<n-1;i++) {
+//			if(turnOn[i]==false) {
+//				light= false;
+//				break;
+//			}
+//		}
+//		
+//		return light;
+//	}
+	
+    public String solution(String S) {
+        String result= "";
+        
+        
+        
+        ArrayList<FileNames> files = new ArrayList<FileNames>();
+        
+        //checked city lists
+        ArrayList<String> checkedCities = new ArrayList<String>();
+        
+        String str[] = S.split("\n");
+        for(int i=0;i<str.length;i++) {
+        	
+        	String[] fileInfo = str[i].split(",");
+        	String cityName = fileInfo[1].split(" ")[1];
+        	String extension = fileInfo[0].split("[.]")[1];
+        	String date = fileInfo[2];
+        	files.add(new FileNames(cityName,extension,date));
+  
+        }
+        for(int i=0;i<files.size();i++) {
+        	String cityName = files.get(i).getCityName();
+        	if(!checkedCities.contains(cityName)) {
+        		checkedCities.add(cityName);
+        		
+
+        		//sort;
+        		ArrayList<String> dates = new ArrayList<String>();
+        		for(int j=0;j<files.size();j++) {
+        			if(files.get(j).getCityName().equals(cityName)) {
+        				dates.add(files.get(j).getDate());
+        				
+        			}
+        		}
+        		Collections.sort(dates);
+        		int zeroCount = ((int)dates.size()/10)+1;
+        		for(int j=0;j<files.size();j++) {
+        			if(files.get(j).getCityName().equals(cityName)) {
+        				files.get(j).setOrder(dates.indexOf(files.get(j).getDate()));
+        				files.get(j).setTotalCount(zeroCount);
+        			}
+        		}
+        		
+        	}
+        }
+        StringBuilder strBuild = new StringBuilder("");
+        for(int i=0;i<files.size();i++) {
+        	//add fileName
+        	strBuild.append(files.get(i).getCityName());
+        	
+        	//add Numbers
+        	strBuild.append(String.format("%0"+files.get(i).getTotalCount()+"d", files.get(i).getOrder()+1));
+        	
+        	//add extension
+        	strBuild.append(".");
+        	strBuild.append(files.get(i).getExtension());
+        	
+        	//add end
+        	strBuild.append("\n");
+        }
+        
+        result = strBuild.toString();
+
+        return result;
+    }
+   
+}
+
+
+class FileNames{
+	String cityName;
+	String extension;
+	String date;
+	int order;
+	int totalCount;
+	
+	FileNames(String cityName, String extension, String date){
+		this.cityName = cityName;
+		this.extension = extension;
+		this.date = date;
+		this.order=0;
+		this.totalCount=0;
+	}
+	void setOrder(int order) {
+		this.order = order;
+	}
+	int getOrder() {
+		return this.order;
+	}
+	void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	int getTotalCount() {
+		return this.totalCount;
+	}
+
+	String getCityName() {
+		return this.cityName;
+	}
+
+	String getDate() {
+		return this.date;
+	}
+
+	String getExtension() {
+		return this.extension;
+	}
+	
+}
